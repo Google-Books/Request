@@ -87,8 +87,7 @@ animation-duration:12s;
 }
 
 .container{
-width:100%;
-max-width:680px;
+width:min(100%,980px);
 padding:40px;
 padding-top:60px;
 border-radius:28px;
@@ -118,6 +117,7 @@ color:white;
 text-align:center;
 margin-bottom:30px;
 letter-spacing:1px;
+font-size:clamp(2rem, 3vw, 3rem);
 }
 
 .field{
