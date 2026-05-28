@@ -96,7 +96,7 @@ animation-duration:12s;
 
 .container{
 width:95%;
-max-width:1400px;
+max-width:2000px;
 padding:40px;
 padding-top:60px;
 border-radius:28px;
