@@ -8,14 +8,16 @@
 
 <style>
 
-/* ====== AD STYLES ====== */
-.ad-right{
+/* ====== AD STYLES (ADDED) ====== */
+.ad-left, .ad-right{
 position:fixed;
 top:50%;
-right:0;
 transform:translateY(-50%);
 z-index:9999;
 }
+
+.ad-left{left:0;}
+.ad-right{right:0;}
 
 .ad-top{
 position:fixed;
@@ -27,7 +29,7 @@ display:none;
 }
 
 @media (max-width: 768px){
-.ad-right{display:none;}
+.ad-left,.ad-right{display:none;}
 .ad-top{display:block;}
 }
 
@@ -46,8 +48,7 @@ display:flex;
 justify-content:center;
 align-items:center;
 padding:20px;
-overflow-x:hidden;
-overflow-y:auto;
+overflow:hidden;
 
 background:
 linear-gradient(135deg,#1f232a,#253140,#1c2531);
@@ -241,75 +242,70 @@ to{transform:translateY(50px);}
 
 <body>
 
-<!-- ===== ADS ===== -->
+<!-- ===== ADS (ADDED) ===== -->
 
+<div class="ad-left" id="adLeft"></div>
 <div class="ad-right" id="adRight"></div>
 <div class="ad-top" id="adTop"></div>
 
 <script>
-let mobileAdTimer = null;
-let lastMode = "";
+function renderAd(containerId, key, height, width, src){
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+
+  const optionsScript = document.createElement("script");
+  optionsScript.textContent = `
+    atOptions = {
+      'key' : '${key}',
+      'format' : 'iframe',
+      'height' : ${height},
+      'width' : ${width},
+      'params' : {}
+    };
+  `;
+
+  const adScript = document.createElement("script");
+  adScript.src = src;
+
+  container.appendChild(optionsScript);
+  container.appendChild(adScript);
+}
 
 function loadAds(){
-const isMobile = window.innerWidth <= 768;
-const mode = isMobile ? "mobile" : "desktop";
+  const isMobile = window.innerWidth <= 768;
 
-if(mode === lastMode) return;
-lastMode = mode;
+  document.getElementById("adLeft").innerHTML = "";
+  document.getElementById("adRight").innerHTML = "";
+  document.getElementById("adTop").innerHTML = "";
 
-if(mobileAdTimer){
-clearInterval(mobileAdTimer);
-mobileAdTimer = null;
+  if(!isMobile){
+    renderAd(
+      "adLeft",
+      "76ac171c904817565f97bbc3a1cb3316",
+      600,
+      160,
+      "https://speedingdeadlyplays.com/76ac171c904817565f97bbc3a1cb3316/invoke.js"
+    );
+
+    renderAd(
+      "adRight",
+      "76ac171c904817565f97bbc3a1cb3316",
+      600,
+      160,
+      "https://speedingdeadlyplays.com/76ac171c904817565f97bbc3a1cb3316/invoke.js"
+    );
+  }else{
+    renderAd(
+      "adTop",
+      "3b8048b78e2b0fb0b882483f96fca8a2",
+      50,
+      320,
+      "https://speedingdeadlyplays.com/3b8048b78e2b0fb0b882483f96fca8a2/invoke.js"
+    );
+  }
 }
 
-document.getElementById("adRight").innerHTML = "";
-document.getElementById("adTop").innerHTML = "";
-
-if(!isMobile){
-
-const adRight = document.getElementById("adRight");
-
-const script1 = document.createElement("script");
-script1.async = true;
-script1.setAttribute("data-cfasync","false");
-script1.src = "https://speedingdeadlyplays.com/9e7c6de14511ba1ef8af0d1bcb71946a/invoke.js";
-
-const container = document.createElement("div");
-container.id = "container-9e7c6de14511ba1ef8af0d1bcb71946a";
-
-adRight.appendChild(script1);
-adRight.appendChild(container);
-
-}else{
-
-const adTop = document.getElementById("adTop");
-
-const options = document.createElement("script");
-options.textContent = `
-atOptions = {
-  'key' : '3b8048b78e2b0fb0b882483f96fca8a2',
-  'format' : 'iframe',
-  'height' : 50,
-  'width' : 320,
-  'params' : {}
-};
-`;
-
-const script2 = document.createElement("script");
-script2.src = "https://speedingdeadlyplays.com/3b8048b78e2b0fb0b882483f96fca8a2/invoke.js";
-
-adTop.appendChild(options);
-adTop.appendChild(script2);
-
-/* timer only for small-screen banner */
-mobileAdTimer = setInterval(() => {
-lastMode = "";
-loadAds();
-}, 9000);
-
-}
-}
-
+setInterval(loadAds, 9000);
 window.addEventListener("load", loadAds);
 window.addEventListener("resize", loadAds);
 </script>
@@ -375,10 +371,10 @@ document.querySelectorAll(".error").forEach(e=>e.style.display="none");
 }
 
 function clearUserFields(){
-document.getElementById("email").value="";
-document.getElementById("book").value="";
-document.getElementById("author").value="";
-document.getElementById("name").value="";
+document.getElementById("email").value = "";
+document.getElementById("book").value = "";
+document.getElementById("author").value = "";
+document.getElementById("name").value = "";
 }
 
 function sendForm(){
@@ -445,13 +441,9 @@ sec--;
 btn.innerText=`Got it (${sec})`;
 
 if(sec<=0){
-
 clearInterval(t);
-
 btn.innerText="Got it";
-
 btn.classList.add("active");
-
 }
 
 },1000);
@@ -459,17 +451,13 @@ btn.classList.add("active");
 }
 
 function closeModal(){
-
 let btn=document.getElementById("closeBtn");
-
 if(!btn.classList.contains("active"))return;
 
 clearUserFields();
-
 clearErrors();
 
 document.getElementById("modal").style.display="none";
-
 }
 
 </script>
