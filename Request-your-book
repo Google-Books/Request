@@ -95,7 +95,7 @@ animation-duration:12s;
 /* این بخش رو کامل جایگزین بخش قبلی .container کن */
 
 .container{
-width:95%;
+width:100%;
 max-width:2000px;
 padding:40px;
 padding-top:60px;
