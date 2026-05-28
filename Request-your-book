@@ -39,12 +39,6 @@ display:block;
 
 }
 
-/* ====== HIDE EXTRA TOP TITLE/LINE ====== */
-body > h1,
-body > hr{
-display:none !important;
-}
-
 /* ====== ORIGINAL CSS ====== */
 
 *{
@@ -92,13 +86,10 @@ bottom:-120px;
 animation-duration:12s;
 }
 
-/* این بخش رو کامل جایگزین بخش قبلی .container کن */
-
 .container{
-width:100%;
-max-width:2000px;
+width:min(100%,1500px);
 padding:40px;
-padding-top:60px;
+padding-top:30px;
 border-radius:28px;
 background:rgba(39,52,69,.75);
 backdrop-filter:blur(18px);
@@ -120,7 +111,6 @@ font-size:16px;
 .back-link:hover{
 text-decoration:none;
 }
-
 
 .field{
 position:relative;
@@ -345,8 +335,6 @@ window.addEventListener("resize",loadMobileBanner);
 <div class="container">
 
 <a href="https://Google-Books.github.io/MainPage/" class="back-link">Back</a>
-
-<h1>Book Request</h1>
 
 <div class="field">
 
