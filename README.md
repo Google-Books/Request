@@ -92,8 +92,11 @@ bottom:-120px;
 animation-duration:12s;
 }
 
+/* این بخش رو کامل جایگزین بخش قبلی .container کن */
+
 .container{
-width:min(100%,1500px);
+width:95%;
+max-width:1400px;
 padding:40px;
 padding-top:60px;
 border-radius:28px;
@@ -118,13 +121,6 @@ font-size:16px;
 text-decoration:none;
 }
 
-h1{
-color:white;
-text-align:center;
-margin-bottom:30px;
-letter-spacing:1px;
-font-size:clamp(2rem, 3vw, 3rem);
-}
 
 .field{
 position:relative;
