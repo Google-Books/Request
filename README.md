@@ -39,6 +39,12 @@ display:block;
 
 }
 
+/* ====== HIDE EXTRA TOP TITLE/LINE ====== */
+body > h1,
+body > hr{
+display:none !important;
+}
+
 /* ====== ORIGINAL CSS ====== */
 
 *{
