@@ -87,7 +87,7 @@ animation-duration:12s;
 }
 
 .container{
-width:min(100%,1100px);
+width:min(100%,1500px);
 padding:40px;
 padding-top:60px;
 border-radius:28px;
