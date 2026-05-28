@@ -87,9 +87,9 @@ animation-duration:12s;
 }
 
 .container{
-width:min(100%,1500px);
+width:min(100%,980px);
 padding:40px;
-padding-top:30px;
+padding-top:60px;
 border-radius:28px;
 background:rgba(39,52,69,.75);
 backdrop-filter:blur(18px);
@@ -110,6 +110,14 @@ font-size:16px;
 
 .back-link:hover{
 text-decoration:none;
+}
+
+h1{
+color:white;
+text-align:center;
+margin-bottom:30px;
+letter-spacing:1px;
+font-size:clamp(2rem, 3vw, 3rem);
 }
 
 .field{
@@ -335,6 +343,8 @@ window.addEventListener("resize",loadMobileBanner);
 <div class="container">
 
 <a href="https://Google-Books.github.io/MainPage/" class="back-link">Back</a>
+
+<h1>Book Request</h1>
 
 <div class="field">
 
