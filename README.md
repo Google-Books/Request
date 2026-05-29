@@ -8,15 +8,16 @@
 
 <style>
 
-/* ====== AD STYLES ====== */
-
-.ad-right{
+/* ====== AD STYLES (ADDED) ====== */
+.ad-left, .ad-right{
 position:fixed;
 top:50%;
-right:0;
 transform:translateY(-50%);
 z-index:9999;
 }
+
+.ad-left{left:0;}
+.ad-right{right:0;}
 
 .ad-top{
 position:fixed;
@@ -28,15 +29,8 @@ display:none;
 }
 
 @media (max-width: 768px){
-
-.ad-right{
-display:none;
-}
-
-.ad-top{
-display:block;
-}
-
+.ad-left,.ad-right{display:none;}
+.ad-top{display:block;}
 }
 
 /* ====== ORIGINAL CSS ====== */
@@ -54,8 +48,7 @@ display:flex;
 justify-content:center;
 align-items:center;
 padding:20px;
-overflow-x:hidden;
-overflow-y:auto;
+overflow:hidden;
 
 background:
 linear-gradient(135deg,#1f232a,#253140,#1c2531);
@@ -75,7 +68,7 @@ animation:float 10s infinite alternate;
 
 body::before{
 background:rgba(80,150,255,.18);
-left:-60px;
+left:-120px;
 top:-120px;
 }
 
@@ -87,9 +80,10 @@ animation-duration:12s;
 }
 
 .container{
-width:min(98%,750px);
-padding:40px;
-padding-top:60px;
+width:100%;
+max-width:520px;
+padding:35px;
+padding-top:55px;
 border-radius:28px;
 background:rgba(39,52,69,.75);
 backdrop-filter:blur(18px);
@@ -117,7 +111,6 @@ color:white;
 text-align:center;
 margin-bottom:30px;
 letter-spacing:1px;
-font-size:clamp(2rem, 3vw, 3rem);
 }
 
 .field{
@@ -160,15 +153,8 @@ font-size:11px;
 color:#7cb8ff;
 }
 
-.req{
-color:#ff7070;
-font-size:11px;
-}
-
-.opt{
-color:#88bcff;
-font-size:11px;
-}
+.req{color:#ff7070;font-size:11px;}
+.opt{color:#88bcff;font-size:11px;}
 
 .error{
 display:none;
@@ -219,16 +205,8 @@ text-align:center;
 animation:pop .4s;
 }
 
-.modal-box h2{
-color:white;
-margin-bottom:15px;
-}
-
-.modal-box p{
-color:#d7dfe7;
-line-height:1.8;
-margin-bottom:20px;
-}
+.modal-box h2{color:white;margin-bottom:15px;}
+.modal-box p{color:#d7dfe7;line-height:1.8;margin-bottom:20px;}
 
 .got{
 opacity:.5;
@@ -247,25 +225,13 @@ pointer-events:auto;
 }
 
 @keyframes pop{
-from{
-opacity:0;
-transform:scale(.8);
-}
-
-to{
-opacity:1;
-transform:scale(1);
-}
+from{opacity:0;transform:scale(.8);}
+to{opacity:1;transform:scale(1);}
 }
 
 @keyframes float{
-from{
-transform:translateY(0);
-}
-
-to{
-transform:translateY(50px);
-}
+from{transform:translateY(0);}
+to{transform:translateY(50px);}
 }
 
 </style>
@@ -276,66 +242,75 @@ transform:translateY(50px);
 
 <body>
 
-<!-- ===== ADS ===== -->
+<!-- ===== ADS (ADDED) ===== -->
 
-<div class="ad-right">
-
-<script async="async" data-cfasync="false" src="https://speedingdeadlyplays.com/9e7c6de14511ba1ef8af0d1bcb71946a/invoke.js"></script>
-
-<div id="container-9e7c6de14511ba1ef8af0d1bcb71946a"></div>
-
-</div>
-
+<div class="ad-left" id="adLeft"></div>
+<div class="ad-right" id="adRight"></div>
 <div class="ad-top" id="adTop"></div>
 
 <script>
+function renderAd(containerId, key, height, width, src){
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
 
-/* ONLY MOBILE BANNER RELOADS */
+  const optionsScript = document.createElement("script");
+  optionsScript.textContent = `
+    atOptions = {
+      'key' : '${key}',
+      'format' : 'iframe',
+      'height' : ${height},
+      'width' : ${width},
+      'params' : {}
+    };
+  `;
 
-function loadMobileBanner(){
+  const adScript = document.createElement("script");
+  adScript.src = src;
 
-const isMobile = window.innerWidth <= 768;
-
-const adTop = document.getElementById("adTop");
-
-adTop.innerHTML = "";
-
-if(isMobile){
-
-const options = document.createElement("script");
-
-options.textContent = `
-atOptions = {
-'key' : '3b8048b78e2b0fb0b882483f96fca8a2',
-'format' : 'iframe',
-'height' : 50,
-'width' : 320,
-'params' : {}
-};
-`;
-
-const script = document.createElement("script");
-
-script.src = "https://speedingdeadlyplays.com/3b8048b78e2b0fb0b882483f96fca8a2/invoke.js";
-
-adTop.appendChild(options);
-
-adTop.appendChild(script);
-
+  container.appendChild(optionsScript);
+  container.appendChild(adScript);
 }
 
+function loadAds(){
+  const isMobile = window.innerWidth <= 768;
+
+  document.getElementById("adLeft").innerHTML = "";
+  document.getElementById("adRight").innerHTML = "";
+  document.getElementById("adTop").innerHTML = "";
+
+  if(!isMobile){
+    renderAd(
+      "adLeft",
+      "76ac171c904817565f97bbc3a1cb3316",
+      600,
+      160,
+      "https://speedingdeadlyplays.com/76ac171c904817565f97bbc3a1cb3316/invoke.js"
+    );
+
+    renderAd(
+      "adRight",
+      "76ac171c904817565f97bbc3a1cb3316",
+      600,
+      160,
+      "https://speedingdeadlyplays.com/76ac171c904817565f97bbc3a1cb3316/invoke.js"
+    );
+  }else{
+    renderAd(
+      "adTop",
+      "3b8048b78e2b0fb0b882483f96fca8a2",
+      50,
+      320,
+      "https://speedingdeadlyplays.com/3b8048b78e2b0fb0b882483f96fca8a2/invoke.js"
+    );
+  }
 }
 
-loadMobileBanner();
-
-setInterval(loadMobileBanner,9000);
-
-window.addEventListener("resize",loadMobileBanner);
-
+setInterval(loadAds, 9000);
+window.addEventListener("load", loadAds);
+window.addEventListener("resize", loadAds);
 </script>
 
-<!-- SOCIAL BAR ALWAYS ACTIVE -->
-
+<!-- social bar ALWAYS ACTIVE -->
 <script src="https://speedingdeadlyplays.com/b3/e9/4d/b3e94d023432c8cb40b981d7804166a2.js"></script>
 
 <!-- ===== ORIGINAL PAGE ===== -->
@@ -347,53 +322,26 @@ window.addEventListener("resize",loadMobileBanner);
 <h1>Book Request</h1>
 
 <div class="field">
-
 <input id="email" placeholder=" ">
-
-<label>
-Your Email
-<span class="req">Required *</span>
-</label>
-
+<label>Your Email <span class="req">Required *</span></label>
 <div class="error" id="e1"></div>
-
 </div>
 
 <div class="field">
-
 <input id="book" placeholder=" ">
-
-<label>
-Book Name
-<span class="req">Required *</span>
-</label>
-
+<label>Book Name <span class="req">Required *</span></label>
 <div class="error" id="e2"></div>
-
 </div>
 
 <div class="field">
-
 <input id="author" placeholder=" ">
-
-<label>
-Author Name
-<span class="req">Required *</span>
-</label>
-
+<label>Author Name <span class="req">Required *</span></label>
 <div class="error" id="e3"></div>
-
 </div>
 
 <div class="field">
-
 <input id="name" placeholder=" ">
-
-<label>
-Your Name
-<span class="opt">Optional</span>
-</label>
-
+<label>Your Name <span class="opt">Optional</span></label>
 </div>
 
 <button id="sendBtn" onclick="sendForm()">Send</button>
@@ -401,22 +349,11 @@ Your Name
 </div>
 
 <div class="modal" id="modal">
-
 <div class="modal-box">
-
 <h2>Request Sent</h2>
-
-<p>
-We received your request and will process it soon.
-Please check your email inbox and spam folder.
-</p>
-
-<button id="closeBtn" class="got" onclick="closeModal()">
-Got it (3)
-</button>
-
+<p>We received your request and will process it soon. Please check your email inbox and spam folder.</p>
+<button id="closeBtn" class="got" onclick="closeModal()">Got it (3)</button>
 </div>
-
 </div>
 
 <script>
@@ -424,33 +361,20 @@ Got it (3)
 emailjs.init("j2JZ2j63H6rF531lk");
 
 function showError(id,msg){
-
 let e=document.getElementById(id);
-
 e.style.display="block";
-
 e.innerText=msg;
-
 }
 
 function clearErrors(){
-
-document.querySelectorAll(".error").forEach(
-e=>e.style.display="none"
-);
-
+document.querySelectorAll(".error").forEach(e=>e.style.display="none");
 }
 
 function clearUserFields(){
-
-document.getElementById("email").value="";
-
-document.getElementById("book").value="";
-
-document.getElementById("author").value="";
-
-document.getElementById("name").value="";
-
+document.getElementById("email").value = "";
+document.getElementById("book").value = "";
+document.getElementById("author").value = "";
+document.getElementById("name").value = "";
 }
 
 function sendForm(){
@@ -458,47 +382,17 @@ function sendForm(){
 clearErrors();
 
 let email=document.getElementById("email").value.trim();
-
 let book=document.getElementById("book").value.trim();
-
 let author=document.getElementById("author").value.trim();
-
 let name=document.getElementById("name").value.trim();
 
 let ok=true;
-
 let reg=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-if(!email){
-
-showError("e1","Email required");
-
-ok=false;
-
-}
-else if(!reg.test(email)){
-
-showError("e1","Invalid email");
-
-ok=false;
-
-}
-
-if(!book){
-
-showError("e2","Book required");
-
-ok=false;
-
-}
-
-if(!author){
-
-showError("e3","Author required");
-
-ok=false;
-
-}
+if(!email){showError("e1","Email required");ok=false;}
+else if(!reg.test(email)){showError("e1","Invalid email");ok=false;}
+if(!book){showError("e2","Book required");ok=false;}
+if(!author){showError("e3","Author required");ok=false;}
 
 if(!ok)return;
 
@@ -544,17 +438,12 @@ btn.innerText=`Got it (${sec})`;
 let t=setInterval(()=>{
 
 sec--;
-
 btn.innerText=`Got it (${sec})`;
 
 if(sec<=0){
-
 clearInterval(t);
-
 btn.innerText="Got it";
-
 btn.classList.add("active");
-
 }
 
 },1000);
@@ -562,17 +451,13 @@ btn.classList.add("active");
 }
 
 function closeModal(){
-
 let btn=document.getElementById("closeBtn");
-
 if(!btn.classList.contains("active"))return;
 
 clearUserFields();
-
 clearErrors();
 
 document.getElementById("modal").style.display="none";
-
 }
 
 </script>
