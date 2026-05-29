@@ -1,581 +1,690 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Requested Books</title>
+    <style>
+        /* --- CSS VARIABLES & THEMES --- */
+        :root {
+            /* Dark Telegram Theme (Default) */
+            --bg-color: #17212b;
+            --card-bg: #242f3d;
+            --text-main: #ffffff;
+            --text-muted: #8b9bb4;
+            --accent: #5288c1;
+            --accent-hover: #4170a3;
+            --danger: #e53935;
+            --danger-hover: #b71c1c;
+            --success: #4caf50;
+            --success-hover: #388e3c;
+            --neon-orange: #ff9800;
+            --modal-bg: rgba(0, 0, 0, 0.6);
+            --border-radius: 12px;
+            --input-border: #3b4b5e;
+        }
 
-<title>Book Request</title>
+        [data-theme="light"] {
+            /* Stable Light Theme */
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-main: #222222;
+            --text-muted: #707579;
+            --accent: #3390ec;
+            --accent-hover: #2670b8;
+            --danger: #d32f2f;
+            --danger-hover: #b71c1c;
+            --success: #2e7d32;
+            --success-hover: #1b5e20;
+            --neon-orange: #f57c00;
+            --modal-bg: rgba(0, 0, 0, 0.4);
+            --border-radius: 12px;
+            --input-border: #cccccc;
+        }
 
-<style>
+        /* --- GLOBAL STYLES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
 
-/* ====== AD STYLES ====== */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-.ad-right{
-position:fixed;
-top:50%;
-right:0;
-transform:translateY(-50%);
-z-index:9999;
-}
+        /* --- HEADER --- */
+        header {
+            background-color: var(--card-bg);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color 0.3s ease;
+        }
 
-.ad-top{
-position:fixed;
-top:0;
-left:50%;
-transform:translateX(-50%);
-z-index:9999;
-display:none;
-}
+        h1 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
 
-@media (max-width: 768px){
+        .settings-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
 
-.ad-right{
-display:none;
-}
+        .settings-btn:hover {
+            transform: rotate(90deg);
+        }
 
-.ad-top{
-display:block;
-}
+        /* --- MAIN LAYOUT --- */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+            padding-bottom: 40px;
+        }
 
-}
+        /* --- CARDS & TEMPLATES --- */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            animation: fadeIn 0.4s ease forwards;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: background-color 0.3s ease;
+        }
 
-/* ====== ORIGINAL CSS ====== */
+        .book-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
+        .neon-book {
+            font-size: 2.2rem;
+            color: var(--neon-orange);
+            text-shadow: 0 0 5px var(--neon-orange), 0 0 15px var(--neon-orange);
+            flex-shrink: 0;
+        }
 
-body{
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-padding:20px;
-overflow-x:hidden;
-overflow-y:auto;
+        .book-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-grow: 1;
+            word-break: break-word;
+        }
 
-background:
-linear-gradient(135deg,#1f232a,#253140,#1c2531);
-}
+        .book-info h3 {
+            font-size: 1.25rem;
+            margin: 0;
+            color: var(--text-main);
+        }
 
-body::before,
-body::after{
-content:"";
-position:fixed;
-width:450px;
-height:450px;
-border-radius:50%;
-filter:blur(120px);
-z-index:-1;
-animation:float 10s infinite alternate;
-}
+        .book-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0;
+        }
 
-body::before{
-background:rgba(80,150,255,.18);
-left:-120px;
-top:-120px;
-}
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            background-color: var(--accent);
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
 
-body::after{
-background:rgba(0,180,255,.12);
-right:-120px;
-bottom:-120px;
-animation-duration:12s;
-}
+        .btn:active { transform: scale(0.98); }
+        .btn:hover { background-color: var(--accent-hover); }
 
-.container{
-width:min(100%,980px);
-padding:40px;
-padding-top:60px;
-border-radius:28px;
-background:rgba(39,52,69,.75);
-backdrop-filter:blur(18px);
-box-shadow:0 20px 60px rgba(0,0,0,.4);
-animation:pop .6s ease;
-position:relative;
-}
+        .btn-danger { background-color: var(--danger); }
+        .btn-danger:hover { background-color: var(--danger-hover); }
 
-.back-link{
-position:absolute;
-top:18px;
-left:22px;
-font-weight:bold;
-color:#ffffff;
-text-decoration:none;
-font-size:16px;
-}
+        .btn-success { background-color: var(--success); }
+        .btn-success:hover { background-color: var(--success-hover); }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+        }
+        .btn-outline:hover {
+            background-color: var(--accent);
+            color: #fff;
+        }
+        
+        /* New styling for exit button to look distinctive */
+        .btn-exit {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .btn-exit:hover {
+            background-color: var(--danger);
+            color: #fff;
+        }
 
-.back-link:hover{
-text-decoration:none;
-}
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+        }
 
-h1{
-color:white;
-text-align:center;
-margin-bottom:30px;
-letter-spacing:1px;
-font-size:clamp(2rem, 3vw, 3rem);
-}
+        .input-group label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
 
-.field{
-position:relative;
-margin-bottom:22px;
-}
+        input[type="text"], input[type="url"], input[type="datetime-local"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--input-border);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.2s, background-color 0.3s, color 0.3s;
+            font-size: 1rem;
+        }
 
-.field input{
-width:100%;
-padding:24px 16px 12px;
-border:none;
-outline:none;
-border-radius:16px;
-background:rgba(20,28,40,.85);
-color:white;
-transition:.3s;
-border:1px solid transparent;
-}
+        input[type="text"]:focus, input[type="url"]:focus, input[type="datetime-local"]:focus {
+            border-color: var(--accent);
+        }
 
-.field input:focus{
-border-color:#5da8ff;
-box-shadow:0 0 20px rgba(93,168,255,.3);
-transform:translateY(-1px);
-}
+        /* --- ADMIN PANEL --- */
+        #admin-panel {
+            display: none;
+            border: 2px solid var(--accent);
+            margin-bottom: 30px;
+        }
 
-.field label{
-position:absolute;
-left:16px;
-top:18px;
-font-size:14px;
-color:#c2cbd6;
-pointer-events:none;
-transition:.3s;
-}
+        .admin-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 5px;
+        }
 
-.field input:focus+label,
-.field input:not(:placeholder-shown)+label{
-top:6px;
-font-size:11px;
-color:#7cb8ff;
-}
+        .admin-controls .btn {
+            flex: 1;
+        }
 
-.req{
-color:#ff7070;
-font-size:11px;
-}
+        .admin-badge {
+            background-color: var(--accent);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
 
-.opt{
-color:#88bcff;
-font-size:11px;
-}
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--modal-bg);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease;
+        }
 
-.error{
-display:none;
-color:#ff7070;
-font-size:13px;
-margin-top:6px;
-animation:shake .25s;
-}
+        .modal {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease;
+        }
 
-button{
-width:100%;
-padding:16px;
-border:none;
-border-radius:16px;
-cursor:pointer;
-font-size:17px;
-color:white;
-background:linear-gradient(90deg,#4ea0ff,#397fff);
-transition:.3s;
-position:relative;
-overflow:hidden;
-}
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
 
-button:hover{
-transform:translateY(-2px);
-box-shadow:0 10px 30px rgba(78,160,255,.35);
-}
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
 
-button:active{
-transform:scale(.98);
-}
+        .theme-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.modal{
-position:fixed;
-inset:0;
-display:none;
-justify-content:center;
-align-items:center;
-background:rgba(0,0,0,.8);
-}
+        .flex-row {
+            display: flex;
+            gap: 10px;
+        }
 
-.modal-box{
-background:#273445;
-padding:35px;
-border-radius:24px;
-max-width:520px;
-text-align:center;
-animation:pop .4s;
-}
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-.modal-box h2{
-color:white;
-margin-bottom:15px;
-}
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 50px;
+            font-size: 1.1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
 
-.modal-box p{
-color:#d7dfe7;
-line-height:1.8;
-margin-bottom:20px;
-}
+        /* ===== ADDED: FIXED BOTTOM BANNER AD ===== */
+        #bottom-banner-ad {
+            position: fixed;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            z-index: 9998;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            pointer-events: auto;
+        }
 
-.got{
-opacity:.5;
-pointer-events:none;
-}
+        #bottom-banner-ad iframe,
+        #bottom-banner-ad ins,
+        #bottom-banner-ad > div {
+            max-width: 100%;
+        }
 
-.got.active{
-opacity:1;
-pointer-events:auto;
-}
+        /* Keep page content above the banner */
+        body {
+            padding-bottom: 120px;
+        }
 
-@keyframes shake{
-25%{transform:translateX(-4px);}
-50%{transform:translateX(4px);}
-75%{transform:translateX(4px);}
-}
-
-@keyframes pop{
-from{
-opacity:0;
-transform:scale(.8);
-}
-
-to{
-opacity:1;
-transform:scale(1);
-}
-}
-
-@keyframes float{
-from{
-transform:translateY(0);
-}
-
-to{
-transform:translateY(50px);
-}
-}
-
-</style>
-
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
+        @media (max-width: 767px) {
+            body {
+                padding-bottom: 80px;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- ===== ADS ===== -->
-
-<div class="ad-right">
-
-<script async="async" data-cfasync="false" src="https://speedingdeadlyplays.com/9e7c6de14511ba1ef8af0d1bcb71946a/invoke.js"></script>
-
-<div id="container-9e7c6de14511ba1ef8af0d1bcb71946a"></div>
-
-</div>
-
-<div class="ad-top" id="adTop"></div>
-
-<script>
-
-/* ONLY MOBILE BANNER RELOADS */
-
-function loadMobileBanner(){
-
-const isMobile = window.innerWidth <= 768;
-
-const adTop = document.getElementById("adTop");
-
-adTop.innerHTML = "";
-
-if(isMobile){
-
-const options = document.createElement("script");
-
-options.textContent = `
-atOptions = {
-'key' : '3b8048b78e2b0fb0b882483f96fca8a2',
-'format' : 'iframe',
-'height' : 50,
-'width' : 320,
-'params' : {}
-};
-`;
-
-const script = document.createElement("script");
-
-script.src = "https://speedingdeadlyplays.com/3b8048b78e2b0fb0b882483f96fca8a2/invoke.js";
-
-adTop.appendChild(options);
-
-adTop.appendChild(script);
-
-}
-
-}
-
-loadMobileBanner();
-
-setInterval(loadMobileBanner,9000);
-
-window.addEventListener("resize",loadMobileBanner);
-
-</script>
-
-<!-- SOCIAL BAR ALWAYS ACTIVE -->
-
-<script src="https://speedingdeadlyplays.com/b3/e9/4d/b3e94d023432c8cb40b981d7804166a2.js"></script>
-
-<!-- ===== ORIGINAL PAGE ===== -->
-
-<div class="container">
-
-<a href="https://Google-Books.github.io/MainPage/" class="back-link">Back</a>
-
-<h1>Book Request</h1>
-
-<div class="field">
-
-<input id="email" placeholder=" ">
-
-<label>
-Your Email
-<span class="req">Required *</span>
-</label>
-
-<div class="error" id="e1"></div>
-
-</div>
-
-<div class="field">
-
-<input id="book" placeholder=" ">
-
-<label>
-Book Name
-<span class="req">Required *</span>
-</label>
-
-<div class="error" id="e2"></div>
-
-</div>
-
-<div class="field">
-
-<input id="author" placeholder=" ">
-
-<label>
-Author Name
-<span class="req">Required *</span>
-</label>
-
-<div class="error" id="e3"></div>
-
-</div>
-
-<div class="field">
-
-<input id="name" placeholder=" ">
-
-<label>
-Your Name
-<span class="opt">Optional</span>
-</label>
-
-</div>
-
-<button id="sendBtn" onclick="sendForm()">Send</button>
-
-</div>
-
-<div class="modal" id="modal">
-
-<div class="modal-box">
-
-<h2>Request Sent</h2>
-
-<p>
-We received your request and will process it soon.
-Please check your email inbox and spam folder.
-</p>
-
-<button id="closeBtn" class="got" onclick="closeModal()">
-Got it (3)
-</button>
-
-</div>
-
-</div>
-
-<script>
-
-emailjs.init("j2JZ2j63H6rF531lk");
-
-function showError(id,msg){
-
-let e=document.getElementById(id);
-
-e.style.display="block";
-
-e.innerText=msg;
-
-}
-
-function clearErrors(){
-
-document.querySelectorAll(".error").forEach(
-e=>e.style.display="none"
-);
-
-}
-
-function clearUserFields(){
-
-document.getElementById("email").value="";
-
-document.getElementById("book").value="";
-
-document.getElementById("author").value="";
-
-document.getElementById("name").value="";
-
-}
-
-function sendForm(){
-
-clearErrors();
-
-let email=document.getElementById("email").value.trim();
-
-let book=document.getElementById("book").value.trim();
-
-let author=document.getElementById("author").value.trim();
-
-let name=document.getElementById("name").value.trim();
-
-let ok=true;
-
-let reg=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-if(!email){
-
-showError("e1","Email required");
-
-ok=false;
-
-}
-else if(!reg.test(email)){
-
-showError("e1","Invalid email");
-
-ok=false;
-
-}
-
-if(!book){
-
-showError("e2","Book required");
-
-ok=false;
-
-}
-
-if(!author){
-
-showError("e3","Author required");
-
-ok=false;
-
-}
-
-if(!ok)return;
-
-document.getElementById("sendBtn").innerText="Sending...";
-
-emailjs.send(
-"service_v9sxbuc",
-"template_rflel19",
-{
-user_email:email,
-book_name:book,
-author_name:author,
-user_name:name
-}
-).then(()=>{
-
-document.getElementById("sendBtn").innerText="Send";
-
-document.getElementById("modal").style.display="flex";
-
-startCountdown();
-
-}).catch(()=>{
-
-document.getElementById("sendBtn").innerText="Send";
-
-alert("Failed to send email");
-
-});
-
-}
-
-function startCountdown(){
-
-let btn=document.getElementById("closeBtn");
-
-let sec=3;
-
-btn.classList.remove("active");
-
-btn.innerText=`Got it (${sec})`;
-
-let t=setInterval(()=>{
-
-sec--;
-
-btn.innerText=`Got it (${sec})`;
-
-if(sec<=0){
-
-clearInterval(t);
-
-btn.innerText="Got it";
-
-btn.classList.add("active");
-
-}
-
-},1000);
-
-}
-
-function closeModal(){
-
-let btn=document.getElementById("closeBtn");
-
-if(!btn.classList.contains("active"))return;
-
-clearUserFields();
-
-clearErrors();
-
-document.getElementById("modal").style.display="none";
-
-}
-
-</script>
-
+    <header>
+        <h1>Requested Books</h1>
+        <button class="settings-btn" onclick="openSettings()">⚙️</button>
+    </header>
+
+    <div class="container">
+        <div id="admin-panel" class="card">
+            <div><span class="admin-badge">Admin: Master Template Setup</span></div>
+            
+            <div class="input-group">
+                <label>Book Name</label>
+                <input type="text" id="master-name" placeholder="e.g., The Great Gatsby">
+            </div>
+
+            <div class="input-group">
+                <label>Publish Date & Time</label>
+                <input type="datetime-local" id="master-datetime">
+            </div>
+
+            <div class="input-group">
+                <label>Download Link</label>
+                <input type="url" id="master-link" placeholder="https://...">
+            </div>
+
+            <button class="btn btn-success" style="margin-top: 10px;" onclick="cloneTemplate()">➕ Clone & Publish Template</button>
+            <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin: 0;">Master template does not have a delete button.</p>
+            
+            <button class="btn btn-outline btn-exit" style="margin-top: 10px;" onclick="exitAdmin()">🚪 Exit Admin Mode</button>
+        </div>
+
+        <div id="user-view"></div>
+    </div>
+
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span>Settings</span>
+                <button class="close-btn" onclick="closeSettings()">×</button>
+            </div>
+            
+            <div class="theme-toggle">
+                <span>App Theme</span>
+                <button class="btn btn-outline" id="theme-btn" style="width: auto;" onclick="toggleTheme()">Day Mode</button>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--input-border); margin: 5px 0;">
+
+            <div class="input-group">
+                <label>Quick Download Code</label>
+                <div class="flex-row">
+                    <input type="text" id="quick-code-input" placeholder="Enter code...">
+                    <button class="btn" style="width: auto; padding: 0 15px;" onclick="checkQuickCode()">Submit</button>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Enter your code to quickly fetch files.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADDED: Global Floating Bottom Banner Ad -->
+    <div id="bottom-banner-ad"></div>
+
+    <!-- ADDED: Always-on Social Bar Ad -->
+    <script src="https://speedingdeadlyplays.com/b3/e9/4d/b3e94d023432c8cb40b981d7804166a2.js"></script>
+
+    <script>
+        // --- STATE MANAGEMENT ---
+        let templates = JSON.parse(localStorage.getItem('requested_books_v2')) || [];
+        let isAdmin = false;
+        let editingId = null; // Tracks which template is currently being edited
+
+        // --- THEME MANAGEMENT ---
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateThemeBtn(currentTheme);
+
+        function toggleTheme() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const newTheme = isDark ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeBtn(newTheme);
+        }
+
+        function updateThemeBtn(theme) {
+            const btn = document.getElementById('theme-btn');
+            btn.textContent = theme === 'dark' ? 'Day Mode' : 'Night Mode';
+        }
+
+        // --- SETTINGS MODAL ---
+        function openSettings() {
+            document.getElementById('settings-modal').style.display = 'flex';
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-modal').style.display = 'none';
+        }
+
+        // --- ADMIN LOGIN (DISGUISED) ---
+        function checkQuickCode() {
+            const inputField = document.getElementById('quick-code-input');
+            const code = inputField.value.trim();
+            
+            if (code === '0785993080') {
+                // Correct admin code
+                isAdmin = true;
+                document.getElementById('admin-panel').style.display = 'flex';
+                closeSettings();
+                inputField.value = ''; 
+                renderTemplates(); 
+            } else {
+                // NEW: Incorrect code alert notifier
+                alert("Invalid Quick Download Code. Please try again or check your code.");
+                inputField.value = '';
+                closeSettings();
+            }
+        }
+        
+        // --- NEW: EXIT ADMIN MODE ---
+        function exitAdmin() {
+            isAdmin = false;
+            editingId = null; // Clear any active edits
+            document.getElementById('admin-panel').style.display = 'none';
+            renderTemplates(); // Re-render to hide edit/delete buttons from templates
+        }
+
+        // --- FORMATTING HELPERS ---
+        function formatDateTime(datetimeStr) {
+            if (!datetimeStr) return 'Date not specified';
+            const d = new Date(datetimeStr);
+            const dateOpts = { year: 'numeric', month: 'short', day: 'numeric' };
+            const timeOpts = { hour: '2-digit', minute: '2-digit' };
+            return `${d.toLocaleDateString(undefined, dateOpts)} at ${d.toLocaleTimeString(undefined, timeOpts)}`;
+        }
+
+        // --- TEMPLATE LOGIC ---
+        function cloneTemplate() {
+            const nameInput = document.getElementById('master-name').value.trim();
+            const datetimeInput = document.getElementById('master-datetime').value;
+            const linkInput = document.getElementById('master-link').value.trim();
+            
+            if (!nameInput || !linkInput) {
+                alert('Book Name and Download Link are required.');
+                return;
+            }
+
+            const newTemplate = {
+                id: Date.now(),
+                name: nameInput,
+                datetime: datetimeInput,
+                link: linkInput
+            };
+
+            templates.unshift(newTemplate); // Add to top
+            saveData();
+            
+            // Clear Master Template Inputs
+            document.getElementById('master-name').value = '';
+            document.getElementById('master-datetime').value = '';
+            document.getElementById('master-link').value = '';
+            
+            renderTemplates();
+        }
+
+        function deleteTemplate(id) {
+            if (confirm("Delete this published template?")) {
+                templates = templates.filter(t => t.id !== id);
+                saveData();
+                renderTemplates();
+            }
+        }
+
+        // --- EDITING LOGIC ---
+        function startEdit(id) {
+            editingId = id;
+            renderTemplates();
+        }
+
+        function cancelEdit() {
+            editingId = null;
+            renderTemplates();
+        }
+
+        function saveEdit(id) {
+            const updatedName = document.getElementById(`edit-name-${id}`).value.trim();
+            const updatedDate = document.getElementById(`edit-datetime-${id}`).value;
+            const updatedLink = document.getElementById(`edit-link-${id}`).value.trim();
+
+            if (!updatedName || !updatedLink) {
+                alert("Book Name and Link cannot be empty.");
+                return;
+            }
+
+            const templateIndex = templates.findIndex(t => t.id === id);
+            if (templateIndex > -1) {
+                templates[templateIndex].name = updatedName;
+                templates[templateIndex].datetime = updatedDate;
+                templates[templateIndex].link = updatedLink;
+                saveData();
+            }
+
+            editingId = null;
+            renderTemplates();
+        }
+
+        function saveData() {
+            localStorage.setItem('requested_books_v2', JSON.stringify(templates));
+        }
+
+        // --- RENDER UI ---
+        function renderTemplates() {
+            const container = document.getElementById('user-view');
+            container.innerHTML = '';
+
+            if (templates.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <span style="font-size: 3rem; opacity: 0.5;">📚</span>
+                        <span>No requested books are available right now.</span>
+                    </div>`;
+                return;
+            }
+
+            templates.forEach((template) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                if (editingId === template.id && isAdmin) {
+                    // --- EDIT MODE VIEW ---
+                    card.innerHTML = `
+                        <div class="admin-badge" style="align-self: flex-start; background-color: var(--neon-orange);">Editing Template</div>
+                        <div class="input-group">
+                            <label>Book Name</label>
+                            <input type="text" id="edit-name-${template.id}" value="${template.name}">
+                        </div>
+                        <div class="input-group">
+                            <label>Publish Date & Time</label>
+                            <input type="datetime-local" id="edit-datetime-${template.id}" value="${template.datetime}">
+                        </div>
+                        <div class="input-group">
+                            <label>Download Link</label>
+                            <input type="url" id="edit-link-${template.id}" value="${template.link}">
+                        </div>
+                        <div class="admin-controls" style="margin-top: 10px;">
+                            <button class="btn btn-success" onclick="saveEdit(${template.id})">💾 Save</button>
+                            <button class="btn btn-outline" onclick="cancelEdit()">Cancel</button>
+                        </div>
+                    `;
+                } else {
+                    // --- NORMAL USER VIEW ---
+                    let innerHTML = `
+                        <div class="book-header">
+                            <div class="neon-book">📘</div>
+                            <div class="book-info">
+                                <h3>${template.name}</h3>
+                                <p>📅 ${formatDateTime(template.datetime)}</p>
+                            </div>
+                        </div>
+                        <a href="${template.link}" target="_blank" class="btn">📥 Download File</a>
+                    `;
+
+                    // --- ADMIN CONTROLS ON CLONED TEMPLATE ---
+                    if (isAdmin) {
+                        innerHTML += `
+                            <hr style="border: 0; border-top: 1px dashed var(--input-border); margin: 5px 0;">
+                            <div class="admin-controls">
+                                <button class="btn btn-outline" onclick="startEdit(${template.id})">✏️ Edit</button>
+                                <button class="btn btn-danger" onclick="deleteTemplate(${template.id})">🗑 Delete</button>
+                            </div>
+                        `;
+                    }
+
+                    card.innerHTML = innerHTML;
+                }
+
+                container.appendChild(card);
+            });
+        }
+
+        // --- INITIALIZATION ---
+        // Automatically render templates on page load
+        renderTemplates();
+
+        // --- ADDED: Responsive floating banner loader + 10s refresh ---
+        function loadBottomBannerAd() {
+            const adContainer = document.getElementById('bottom-banner-ad');
+            if (!adContainer) return;
+
+            const width = window.innerWidth || document.documentElement.clientWidth || screen.width;
+            let adHTML = '';
+
+            if (width < 768) {
+                adHTML = `
+                    <script>
+                        atOptions = {
+                            'key' : '3b8048b78e2b0fb0b882483f96fca8a2',
+                            'format' : 'iframe',
+                            'height' : 50,
+                            'width' : 320,
+                            'params' : {}
+                        };
+                    <\/script>
+                    <script src="https://speedingdeadlyplays.com/3b8048b78e2b0fb0b882483f96fca8a2/invoke.js"><\/script>
+                `;
+            } else if (width < 1024) {
+                adHTML = `
+                    <script>
+                        atOptions = {
+                            'key' : '27bf67bdd07dd3734a6fdff8c7879c99',
+                            'format' : 'iframe',
+                            'height' : 60,
+                            'width' : 468,
+                            'params' : {}
+                        };
+                    <\/script>
+                    <script src="https://speedingdeadlyplays.com/27bf67bdd07dd3734a6fdff8c7879c99/invoke.js"><\/script>
+                `;
+            } else {
+                adHTML = `
+                    <script>
+                        atOptions = {
+                            'key' : '30c18b6ace1c2676949453fd6ac33776',
+                            'format' : 'iframe',
+                            'height' : 90,
+                            'width' : 728,
+                            'params' : {}
+                        };
+                    <\/script>
+                    <script src="https://speedingdeadlyplays.com/30c18b6ace1c2676949453fd6ac33776/invoke.js"><\/script>
+                `;
+            }
+
+            adContainer.innerHTML = adHTML;
+        }
+
+        loadBottomBannerAd();
+        setInterval(loadBottomBannerAd, 10000);
+        window.addEventListener('resize', loadBottomBannerAd);
+    </script>
 </body>
 </html>
