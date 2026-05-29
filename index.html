@@ -75,7 +75,7 @@ animation:float 10s infinite alternate;
 
 body::before{
 background:rgba(80,150,255,.18);
-left:-120px;
+left:-60px;
 top:-120px;
 }
 
