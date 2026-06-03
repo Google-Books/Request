@@ -153,6 +153,32 @@ font-size:11px;
 color:#7cb8ff;
 }
 
+/* استایل‌های اضافه شده برای بخش انتخاب فرمت */
+#book {
+    padding-right: 85px; 
+}
+.format-select {
+    position: absolute;
+    right: 12px;
+    top: 16px;
+    background: rgba(20,28,40,.9);
+    color: white;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 5px;
+    font-size: 13px;
+    outline: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.format-select:focus, .format-select:hover {
+    border-color: #5da8ff;
+}
+.format-select option {
+    background: #273445;
+    color: white;
+}
+
 .req{color:#ff7070;font-size:11px;}
 .opt{color:#88bcff;font-size:11px;}
 
@@ -242,8 +268,6 @@ to{transform:translateY(50px);}
 
 <body>
 
-<!-- ===== ADS (ADDED) ===== -->
-
 <div class="ad-left" id="adLeft"></div>
 <div class="ad-right" id="adRight"></div>
 <div class="ad-top" id="adTop"></div>
@@ -310,10 +334,7 @@ window.addEventListener("load", loadAds);
 window.addEventListener("resize", loadAds);
 </script>
 
-<!-- social bar ALWAYS ACTIVE -->
 <script src="https://speedingdeadlyplays.com/b3/e9/4d/b3e94d023432c8cb40b981d7804166a2.js"></script>
-
-<!-- ===== ORIGINAL PAGE ===== -->
 
 <div class="container">
 
@@ -330,6 +351,10 @@ window.addEventListener("resize", loadAds);
 <div class="field">
 <input id="book" placeholder=" ">
 <label>Book Name <span class="req">Required *</span></label>
+<select id="format" class="format-select">
+    <option value="PDF">PDF</option>
+    <option value="EPUB">EPUB</option>
+</select>
 <div class="error" id="e2"></div>
 </div>
 
@@ -382,16 +407,20 @@ function sendForm(){
 clearErrors();
 
 let email=document.getElementById("email").value.trim();
-let book=document.getElementById("book").value.trim();
+let rawBook=document.getElementById("book").value.trim();
+let format=document.getElementById("format").value;
 let author=document.getElementById("author").value.trim();
 let name=document.getElementById("name").value.trim();
+
+// اضافه کردن فرمت به اسم کتاب با یک کاما در صورت خالی نبودن فیلد
+let book = rawBook ? (rawBook + ", " + format) : "";
 
 let ok=true;
 let reg=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 if(!email){showError("e1","Email required");ok=false;}
 else if(!reg.test(email)){showError("e1","Invalid email");ok=false;}
-if(!book){showError("e2","Book required");ok=false;}
+if(!rawBook){showError("e2","Book required");ok=false;}
 if(!author){showError("e3","Author required");ok=false;}
 
 if(!ok)return;
